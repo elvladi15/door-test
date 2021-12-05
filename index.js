@@ -1,41 +1,61 @@
 class Door {
-  constructor(opened, locked) {
+  constructor(opened, locked, key) {
     this.opened = opened;
     this.locked = locked;
-  }
-  open() {
-    if (this.opened) {
-      return "door already opened.";
-    } else {
-      this.opened = true;
-      return "door has been opened!";
+    if (key == null) {
+      return Error("No key specified");
     }
+    this.key = key;
+  }
+  //create new door
+  static createClosedAndUnlockedDoor(key) {
+    return new Door(false, false, key);
+  }
+  static createClosedAndLockedDoor(key) {
+    return new Door(false, true, key);
+  }
+  static createOpenedAndUnlockedDoor(key) {
+    return new Door(true, false, key);
+  }
+  static createOpenedAndLockedDoor(key) {
+    return new Door(true, true, key);
+  }
+  //change door state
+  open() {
+    if (!this.opened) {
+      this.opened = true;
+      return this;
+    }
+    throw new Error("Door already opened");
   }
   close() {
     if (this.opened) {
       this.opened = false;
-      return "door has been closed!.";
-    } else {
-      return "door already closed.";
+      return this;
     }
+    throw new Error("Door already closed");
   }
   lock() {
-    if (this.locked) {
-      return "door already locked.";
-    } else {
+    if (!this.locked) {
       this.locked = true;
-      return "door has been locked!";
+      return this;
     }
+    throw new Error("Door already locked");
   }
-  unlock() {
-    if (this.locked) {
-      this.locked = false;
-      return "door has been unlocked!.";
-    } else {
-      return "door already unlocked.";
+  unlock(key) {
+    if (key) {
+      if (key === this.key) {
+        if (this.locked) {
+          this.locked = false;
+          return this;
+        }
+        throw new Error("Door already unlocked");
+      }
+      throw new Error("Keys don't match");
     }
+    throw new Error("No key provided");
   }
-
+  //get door state
   isOpened() {
     return this.opened;
   }
@@ -49,20 +69,3 @@ class Door {
     return !this.locked;
   }
 }
-
-function closedAndUnlocked() {
-  return new Door(false, false);
-}
-function closedAndLocked() {
-  return new Door(false, true);
-}
-function openedAndUnlocked() {
-  return new Door(true, false);
-}
-function openedAndLocked() {
-  return new Door(true, true);
-}
-
-const door1 = openedAndUnlocked();
-
-console.log();
